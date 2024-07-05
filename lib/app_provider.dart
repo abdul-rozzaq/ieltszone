@@ -24,6 +24,7 @@ class AppProvider extends ChangeNotifier {
   int currentTestIndex = 0;
 
   Test get currentTest => exam.tests[currentTestIndex];
+  double get process => exam.tests.where((element) => element.answerId != null).length / exam.tests.length;
 
   void startTimer() {
     timeLeft = exam.duration;
@@ -76,7 +77,6 @@ class AppProvider extends ChangeNotifier {
   login(int id, String password) async => await post(Uri.parse('$url/api/login/'), body: {'id': id.toString(), 'password': password});
 
   void fetchExam(String code) async {
-
     if (code.trim() != '') {
       Response response = await get(Uri.parse('$url/api/exams/by-code/$code/'));
 

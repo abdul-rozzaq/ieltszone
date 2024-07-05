@@ -101,12 +101,29 @@ class _SolveTestState extends State<SolveTest> with WidgetsBindingObserver {
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(bottom: 15),
+                    margin: const EdgeInsets.only(bottom: 4),
                     width: width,
                     height: 8,
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8 * provider.process,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
                     ),
                   ),
                 ],
