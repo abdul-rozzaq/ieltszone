@@ -13,14 +13,6 @@ class TestEntryPage extends StatefulWidget {
 
 class _TestEntryPageState extends State<TestEntryPage> {
   @override
-  void initState() {
-    super.initState();
-
-    AppProvider provider = Provider.of(context, listen: false);
-    provider.loadTestSet();
-  }
-
-  @override
   Widget build(BuildContext context) {
     AppProvider provider = Provider.of(context, listen: true);
 
@@ -33,7 +25,7 @@ class _TestEntryPageState extends State<TestEntryPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Test title aspdok apwokd awkldn alwnd aasuuiahd awpdoakw dopkawd aw[dpkawdp oajwdji]',
+                provider.exam.title,
                 maxLines: 2,
                 style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 20, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
@@ -55,7 +47,7 @@ class _TestEntryPageState extends State<TestEntryPage> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     child: Text(
-                      secondsToTime(provider.testSet.duration),
+                      secondsToTime(provider.exam.duration),
                       style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),

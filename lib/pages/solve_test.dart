@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ieltszone/app_provider.dart';
 import 'package:ieltszone/main.dart';
-import 'package:ieltszone/models/test_set_model.dart';
+import 'package:ieltszone/models/exam_model.dart';
 import 'package:provider/provider.dart';
 
 class SolveTest extends StatefulWidget {
@@ -35,7 +35,7 @@ class _SolveTestState extends State<SolveTest> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     AppProvider provider = Provider.of(context, listen: true);
 
-    double width = MediaQuery.of(context).size.width * 0.8 * (provider.timeLeft / provider.testSet.duration);
+    double width = MediaQuery.of(context).size.width * 0.8 * (provider.timeLeft / provider.exam.duration);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,

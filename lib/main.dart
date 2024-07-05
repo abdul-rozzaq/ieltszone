@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ieltszone/app_provider.dart';
+import 'package:ieltszone/pages/home_page.dart';
 import 'package:ieltszone/pages/register_page.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
+  
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => AppProvider()),
@@ -14,8 +18,21 @@ void main() {
   ));
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  @override
+  void initState() {
+    super.initState();
+
+    AppProvider provider = Provider.of(context, listen: false);
+    provider.loadUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +51,7 @@ class App extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const RegisterPage(),
+      home: provider.isAuth ? const HomePage() : const RegisterPage(),
     );
   }
 }

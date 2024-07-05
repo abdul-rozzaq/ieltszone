@@ -1,19 +1,22 @@
-class TestSet {
+class Exam {
   int id;
+  String title;
   List<Test> tests;
   int duration;
 
-  TestSet({
+  Exam({
+    required this.title,
     required this.id,
     required this.tests,
     required this.duration,
   });
 
-  static TestSet fromJson(Map<String, dynamic> json) {
+  static Exam fromJson(Map<String, dynamic> json) {
     var testsFromJson = json['tests'] as List;
     List<Test> testList = testsFromJson.map((test) => Test.fromJson(test)).toList();
 
-    return TestSet(
+    return Exam(
+      title: json['title'],
       id: json['id'],
       tests: testList,
       duration: json['duration'],

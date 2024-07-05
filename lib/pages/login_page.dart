@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
+import 'package:ieltszone/app_provider.dart';
+import 'package:ieltszone/models/user_model.dart';
 import 'package:ieltszone/pages/home_page.dart';
+import 'package:ieltszone/services/storage_service.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,6 +20,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool obscured = true;
+
+  final idController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                         keyboardType: TextInputType.number,
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         maxLength: 5,
+                        controller: idController,
                         maxLengthEnforcement: null,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.secondary)),
@@ -70,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 12),
                       TextField(
+                        controller: passwordController,
                         cursorColor: Theme.of(context).colorScheme.secondary,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.secondary)),
@@ -97,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 20),
                       InkWell(
-                        onTap: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()), (c) => false),
+                        onTap: login,
                         child: Ink(
                           padding: const EdgeInsets.all(12),
                           width: double.maxFinite,
@@ -167,5 +179,37 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  login() async {
+    if (idController.text.trim() != "" && passwordController.text.trim() != "") {
+      FocusScope.of(context).unfocus();
+
+      showDialog(
+        context: context,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+      );
+
+      AppProvider provider = Provider.of(context, listen: false);
+
+      Response response = await provider.login(int.parse(idController.text.trim()), passwordController.text.trim());
+
+      if (response.statusCode == 200) {
+        User user = User.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+
+        await UserStorage().saveUser(user);
+
+        provider.user = user;
+        provider.isAuth = true;
+
+        return Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()), (x) => false);
+      }
+
+      Navigator.of(context).pop();
+    }
   }
 }

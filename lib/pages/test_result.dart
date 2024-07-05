@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ieltszone/pages/home_page.dart';
 
 class ResultPage extends StatelessWidget {
   const ResultPage({super.key});
@@ -30,6 +31,24 @@ class ResultPage extends StatelessWidget {
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+            const SizedBox(height: 20),
+            InkWell(
+              onTap: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()), (route) => false),
+              child: Ink(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  'Home Page',
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                ),
               ),
             ),
           ],

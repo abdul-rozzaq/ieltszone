@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
+import 'package:ieltszone/app_provider.dart';
+import 'package:ieltszone/models/user_model.dart';
 import 'package:ieltszone/pages/home_page.dart';
 import 'package:ieltszone/pages/login_page.dart';
+import 'package:ieltszone/services/storage_service.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -11,6 +18,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  TextEditingController fullNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(height: 40),
                       TextField(
                         cursorColor: Theme.of(context).colorScheme.secondary,
+                        controller: fullNameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.secondary)),
                           enabledBorder: OutlineInputBorder(borderSide: BorderSide(width: 2, color: Theme.of(context).colorScheme.secondary)),
@@ -62,7 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 20),
                       InkWell(
-                        onTap: () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()), (x) => false),
+                        onTap: () => register(),
                         child: Ink(
                           padding: const EdgeInsets.all(12),
                           width: double.maxFinite,
@@ -132,5 +142,35 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  register() async {
+    if (fullNameController.text.trim() != '') {
+      showDialog(
+        context: context,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+      );
+
+      AppProvider provider = Provider.of(context, listen: false);
+
+      Response response = await provider.register(fullNameController.text.trim());
+
+      if (response.statusCode == 201) {
+        User user = User.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+
+        await UserStorage().saveUser(user);
+
+        provider.user = user;
+        provider.isAuth = true;
+
+        return Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()), (x) => false);
+      }
+
+      Navigator.of(context).pop();
+    }
   }
 }
